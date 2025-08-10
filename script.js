@@ -1,17 +1,16 @@
-const fish = document.getElementById("fish");
+const dragon = document.getElementById("dragon");
 
-// เริ่มให้ปลาขยับตามเมาส์แบบติดหนึบ (ง่ายสุด)
+// เคลื่อนตำแหน่งตามเมาส์ (โหมดติดตามทันที)
 document.addEventListener("mousemove", (e) => {
-  // จัดตำแหน่งให้ปลาศูนย์กลางอยู่จุดเมาส์
-  const x = e.pageX - fish.width / 2;
-  const y = e.pageY - fish.height / 2;
-  fish.style.left = x + "px";
-  fish.style.top = y + "px";
+  const x = e.pageX - dragon.clientWidth / 2;
+  const y = e.pageY - dragon.clientHeight / 2;
+  dragon.style.left = x + "px";
+  dragon.style.top = y + "px";
 
-  // กลับด้านปลาให้หันซ้าย/ขวาตามทิศการเคลื่อน
+  // กลับด้านซ้าย/ขวาตามทิศทางเมาส์
   if (e.movementX < 0) {
-    fish.style.transform = "scaleX(-1)"; // หันซ้าย
+    dragon.style.transform = "scaleX(-1)";
   } else if (e.movementX > 0) {
-    fish.style.transform = "scaleX(1)"; // หันขวา
+    dragon.style.transform = "scaleX(1)";
   }
 });

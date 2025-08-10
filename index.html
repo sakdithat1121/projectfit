@@ -3,20 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>เรียนรู้การใช้งาน Git เบื้องต้น</title>
+    <title>วิดีโอมังกร + เมนูหัวข้อ</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-
   <body>
-    <h2>เรียนรู้การใช้งาน git เบื้องต้น</h2>
-    <hr />
-    <h2>มหาวิทยาลัยเทคโนโลยีราชมงคลล้านนาลำปาง</h2>
-    <h2>คณะวิทยาศาสตร์และเทคโนโลยีสารสนเทศ</h2>
-    <h2>สาขาวิชาเทคโนโลยีสารสนเทศ</h2>
+    <!-- วิดีโอพื้นหลัง -->
+    <video autoplay muted loop playsinline id="bg-video">
+      <source src="videos/91696-633384635_small.mp4" type="video/mp4" />
+      เบราว์เซอร์ของคุณไม่รองรับวิดีโอ HTML5
+    </video>
 
-    <!-- ปลา -->
-    <img id="fish" src="images/Fish-PNG-2.png" alt="fish" />
-
-    <script src="script.js"></script>
+    <!-- เนื้อหาทับบนวิดีโอ -->
+    <div class="content">
+      <h1>เลือกหัวข้อ</h1>
+      <div class="menu-buttons">
+        <button onclick="alert('หัวข้อที่ 1')">หัวข้อที่ 1</button>
+        <button onclick="alert('หัวข้อที่ 2')">หัวข้อที่ 2</button>
+        <button onclick="alert('หัวข้อที่ 3')">หัวข้อที่ 3</button>
+      </div>
+    </div>
   </body>
 </html>
