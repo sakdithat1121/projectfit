@@ -28,6 +28,7 @@
         background: #081523;
       }
 
+      /* BG video */
       .bg {
         position: fixed;
         inset: 0;
@@ -369,7 +370,7 @@
         color: var(--muted);
       }
 
-      /* Clickable info cards + modal */
+      /* Cards + Modal */
       .info-grid {
         display: grid;
         gap: 20px;
@@ -536,6 +537,7 @@
       <section class="reveal" style="--d: 60ms">
         <div class="gallery">
           <div class="track" id="track">
+            <!-- ชุด A -->
             <img src="images/g1.jpg" alt="" /><img
               src="images/g2.jpg"
               alt=""
@@ -550,6 +552,7 @@
               src="images/g8.jpg"
               alt=""
             />
+            <!-- ชุด B -->
             <img src="images/g1.jpg" alt="" /><img
               src="images/g2.jpg"
               alt=""
@@ -568,31 +571,32 @@
         </div>
       </section>
 
-      <!-- ส่วนข้อมูลสำคัญ (กดแล้วเรียกผ่าน Proxy) -->
+      <!-- ข้อมูลสำคัญ (ไม่ใช้ PHP) -->
       <section class="reveal-stagger" style="margin: 60px 0">
         <h2 style="text-align: center; margin-bottom: 28px">ข้อมูลสำคัญ</h2>
         <div class="info-grid">
-          <a class="info-card" href="#" data-endpoint="/api/education.php"
-            ><h3>การศึกษา</h3>
-            <p>
-              ปริญญาตรี สาขาเทคโนโลยีสารสนเทศ มหาวิทยาลัยเทคโนโลยีจินตนาการ
-            </p></a
-          >
-          <a class="info-card" href="#" data-endpoint="/api/experience.php"
-            ><h3>ประสบการณ์ทำงาน</h3>
+          <a class="info-card" href="#" data-slug="education">
+            <h3>การศึกษา</h3>
+            <p>ปริญญาตรี สาขาเทคโนโลยีสารสนเทศ มหาวิทยาลัยเทคโนโลยีจินตนาการ</p>
+          </a>
+
+          <a class="info-card" href="#" data-slug="experience">
+            <h3>ประสบการณ์ทำงาน</h3>
             <ul>
               <li>Full-Stack Developer ที่ บริษัท XYZ (2021–ปัจจุบัน)</li>
               <li>Frontend Developer ที่ Startup ABC (2019–2021)</li>
-            </ul></a
-          >
-          <a class="info-card" href="#" data-endpoint="/api/skills.php"
-            ><h3>ความเชี่ยวชาญ</h3>
-            <p>React, Next.js, Node.js, UI/UX Design, Motion Animation</p></a
-          >
-          <a class="info-card" href="#" data-endpoint="/api/goals.php"
-            ><h3>เป้าหมาย</h3>
-            <p>สร้างประสบการณ์ผู้ใช้ที่ “เหนือจินตนาการ”</p></a
-          >
+            </ul>
+          </a>
+
+          <a class="info-card" href="#" data-slug="skills">
+            <h3>ความเชี่ยวชาญ</h3>
+            <p>React, Next.js, Node.js, UI/UX Design, Motion Animation</p>
+          </a>
+
+          <a class="info-card" href="#" data-slug="goals">
+            <h3>เป้าหมาย</h3>
+            <p>สร้างประสบการณ์ผู้ใช้ที่ “เหนือจินตนาการ”</p>
+          </a>
         </div>
       </section>
 
@@ -644,7 +648,7 @@
     </main>
 
     <script>
-      // Typed loop
+      /* ===== Typed loop ===== */
       const typedEl = document.getElementById("typed");
       const words = [
         "นาย ศักดิธัช จะมัง",
@@ -655,24 +659,22 @@
       let wi = 0,
         ci = 0,
         del = false;
-      function typeLoop() {
+      (function typeLoop() {
         const w = words[wi];
         ci += del ? -1 : 1;
         typedEl.textContent = w.slice(0, ci);
         if (!del && ci === w.length) {
           del = true;
-          setTimeout(typeLoop, 900);
-          return;
+          return setTimeout(typeLoop, 900);
         }
         if (del && ci === 0) {
           del = false;
           wi = (wi + 1) % words.length;
         }
         setTimeout(typeLoop, del ? 40 : 70);
-      }
-      typeLoop();
+      })();
 
-      // BGM
+      /* ===== Audio toggle ===== */
       const audioBtn = document.getElementById("audioBtn"),
         bgm = document.getElementById("bgm");
       let audioOn = false;
@@ -703,7 +705,7 @@
         { once: true }
       );
 
-      // Reveal + Counters
+      /* ===== Reveal + Counters ===== */
       const onceObserver = new IntersectionObserver(
         (entries, obs) => {
           entries.forEach((entry) => {
@@ -722,6 +724,7 @@
       document
         .querySelectorAll(".reveal, .reveal-stagger")
         .forEach((el) => onceObserver.observe(el));
+
       let countersStarted = false;
       function startCounters() {
         if (countersStarted) return;
@@ -743,13 +746,75 @@
           })();
         });
       }
-    </script>
 
-    <!-- เรียก PHP ผ่าน Vercel Proxy -->
-    <script>
-      const USE_PROXY = true;
-      const API_BASE = "https://your-php-host.com"; // ใช้เมื่อไม่ผ่าน proxy
+      /* ===== Data (แทน PHP ด้วย JSON ในหน้านี้) ===== */
+      const DB = {
+        education: {
+          title: "การศึกษา",
+          items: [
+            {
+              program: "ปริญญาตรี เทคโนโลยีสารสนเทศ",
+              school: "มหาวิทยาลัยเทคโนโลยีจินตนาการ",
+              years: "2021–ปัจจุบัน",
+              detail: "Web Dev, UI/UX, Motion",
+            },
+            {
+              program: "ประกาศนียบัตร วิทยาการคอมฯ",
+              school: "วิทยาลัยเทคนิคบางสิทธิ์",
+              years: "2019–2021",
+              detail: "OOP, Network, Algorithm",
+            },
+          ],
+        },
+        experience: {
+          title: "ประสบการณ์ทำงาน",
+          items: [
+            {
+              role: "Full-Stack Developer",
+              org: "บริษัท XYZ",
+              years: "2023–ปัจจุบัน",
+              detail: "ออกแบบระบบ, API, CI/CD, React/Next.js",
+            },
+            {
+              role: "Frontend Dev (Intern)",
+              org: "Startup ABC",
+              years: "2022–2023",
+              detail: "React, Tailwind, Motion",
+            },
+          ],
+        },
+        skills: {
+          title: "ความเชี่ยวชาญ",
+          skills: [
+            {
+              name: "Frontend",
+              percent: 92,
+              stack: "React, Next.js, Tailwind, Motion",
+            },
+            {
+              name: "Backend",
+              percent: 85,
+              stack: "Node.js, Express, Prisma, REST",
+            },
+            {
+              name: "UI/UX",
+              percent: 88,
+              stack: "Design System, Wireframe, Prototype",
+            },
+            {
+              name: "DevOps",
+              percent: 76,
+              stack: "Vercel, Docker(พื้นฐาน), CI/CD",
+            },
+          ],
+        },
+        goals: {
+          title: "เป้าหมาย",
+          html: "<p>สร้างประสบการณ์ผู้ใช้ที่ <strong>เหนือจินตนาการ</strong></p>",
+        },
+      };
 
+      /* ===== Modal helpers ===== */
       const modal = document.getElementById("modal");
       const modalTitle = document.getElementById("modalTitle");
       const modalBody = document.getElementById("modalBody");
@@ -770,72 +835,63 @@
         if (e.key === "Escape") closeModal();
       });
 
-      function endpointToSlug(ep) {
-        const m = String(ep).match(/\/api\/([a-z0-9_-]+)\.php/i);
-        return m ? m[1] : ep;
-      }
-
+      /* ===== Click cards → show data from DB (ไม่ใช้ PHP) ===== */
       document.querySelectorAll(".info-card").forEach((card) => {
-        card.addEventListener("click", async (e) => {
+        card.addEventListener("click", (e) => {
           e.preventDefault();
-          const endpoint = card.getAttribute("data-endpoint");
-          if (!endpoint) return;
-          modalTitle.textContent = "กำลังโหลด…";
-          modalBody.innerHTML = "<p>โปรดรอ</p>";
-          openModal();
-          try {
-            const url = USE_PROXY
-              ? `/api/php?path=${encodeURIComponent(endpointToSlug(endpoint))}`
-              : API_BASE.replace(/\/+$/, "") + endpoint;
-            const res = await fetch(url, { method: "GET" });
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const data = await res.json();
-
-            modalTitle.textContent = data.title || "รายละเอียด";
-            if (data.html) {
-              modalBody.innerHTML = data.html;
-            } else if (Array.isArray(data.items)) {
-              modalBody.innerHTML =
-                "<ul>" +
-                data.items
-                  .map((item) => {
-                    if (item.program) {
-                      return `<li><strong>${item.program}</strong> — ${
-                        item.school
-                      } <em>(${item.years})</em><br>${item.detail || ""}</li>`;
-                    }
-                    if (item.role) {
-                      return `<li><strong>${item.role}</strong> — ${
-                        item.org
-                      } <em>(${item.years})</em><br>${item.detail || ""}</li>`;
-                    }
-                    return `<li>${Object.values(item).join(" — ")}</li>`;
-                  })
-                  .join("") +
-                "</ul>";
-            } else if (Array.isArray(data.skills)) {
-              modalBody.innerHTML =
-                "<div>" +
-                data.skills
-                  .map(
-                    (s) =>
-                      `<div style="margin:.4em 0"><strong>${
-                        s.name
-                      }</strong> — ${s.percent}%<br><span style="opacity:.85">${
-                        s.stack || ""
-                      }</span></div>`
-                  )
-                  .join("") +
-                "</div>";
-            } else {
-              modalBody.textContent = "ไม่มีข้อมูลสำหรับแสดง";
-            }
-          } catch (err) {
-            modalTitle.textContent = "เกิดข้อผิดพลาด";
-            modalBody.innerHTML = `<p style="color:#ffb3b3">โหลดข้อมูลไม่สำเร็จ: ${err.message}</p><p>ถ้าใช้ Proxy: ตรวจสอบค่า PHP_API_BASE บน Vercel</p>`;
+          const slug = card.getAttribute("data-slug");
+          const data = DB[slug];
+          modalTitle.textContent = data?.title || "รายละเอียด";
+          if (!data) {
+            modalBody.innerHTML = "<p>ไม่มีข้อมูลสำหรับแสดง</p>";
+            openModal();
+            return;
           }
+
+          if (data.html) {
+            modalBody.innerHTML = data.html;
+          } else if (Array.isArray(data.items)) {
+            modalBody.innerHTML =
+              "<ul>" +
+              data.items
+                .map((item) => {
+                  if (item.program) {
+                    return `<li><strong>${item.program}</strong> — ${
+                      item.school
+                    } <em>(${item.years})</em><br>${item.detail || ""}</li>`;
+                  } else if (item.role) {
+                    return `<li><strong>${item.role}</strong> — ${
+                      item.org
+                    } <em>(${item.years})</em><br>${item.detail || ""}</li>`;
+                  }
+                  return `<li>${Object.values(item).join(" — ")}</li>`;
+                })
+                .join("") +
+              "</ul>";
+          } else if (Array.isArray(data.skills)) {
+            modalBody.innerHTML = data.skills
+              .map(
+                (s) =>
+                  `<div style="margin:.4em 0"><strong>${s.name}</strong> — ${
+                    s.percent
+                  }%<br><span style="opacity:.85">${s.stack || ""}</span></div>`
+              )
+              .join("");
+          } else {
+            modalBody.innerHTML = "<p>ไม่มีข้อมูลสำหรับแสดง</p>";
+          }
+          openModal();
         });
       });
+
+      /* ===== TIP: ถ้าอยากแยกไฟล์ JSON ไว้ใน /data แทน =====
+         - สร้าง /data/education.json, /data/experience.json, ...
+         - แล้วแทนโค้ดดึงจาก DB ด้วย:
+           const slug = card.getAttribute("data-slug");
+           const res = await fetch(`/data/${slug}.json`);
+           const data = await res.json();
+         - ต้องรันผ่านเซิร์ฟเวอร์ท้องถิ่น (เช่น npx serve -l 3000) ไม่ใช่ file://
+      ===== */
     </script>
   </body>
 </html>
