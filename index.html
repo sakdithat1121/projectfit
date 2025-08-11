@@ -1,26 +1,98 @@
 <!DOCTYPE html>
 <html lang="th">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>วิดีโอมังกร + เมนูหัวข้อ</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>เข้าสู่ระบบ</title>
+    <link rel="stylesheet" href="style.css?v=9" />
   </head>
-  <body>
-    <!-- วิดีโอพื้นหลัง -->
-    <video autoplay muted loop playsinline id="bg-video">
-      <source src="videos/91696-633384635_small.mp4" type="video/mp4" />
+  <body class="login-page">
+    <!-- วิดีโอพื้นหลังทั้งหน้า -->
+    <video
+      id="bgVid"
+      class="bg-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      poster="images/login-poster.jpg"
+    >
+      <source src="videos/login1.mp4" type="video/mp4" />
       เบราว์เซอร์ของคุณไม่รองรับวิดีโอ HTML5
     </video>
 
-    <!-- เนื้อหาทับบนวิดีโอ -->
-    <div class="content">
-      <h1>เลือกหัวข้อ</h1>
-      <div class="menu-buttons">
-        <button onclick="alert('หัวข้อที่ 1')">หัวข้อที่ 1</button>
-        <button onclick="alert('หัวข้อที่ 2')">หัวข้อที่ 2</button>
-        <button onclick="alert('หัวข้อที่ 3')">หัวข้อที่ 3</button>
+    <!-- (เอา bg-anim / visual-panel ออกได้เลยเพื่อให้เห็นวิดีโอชัด) -->
+
+    <div class="auth-grid">
+      <!-- การ์ดล็อกอิน -->
+      <div class="login-card">
+        <img src="images/logo.png" alt="logo" class="login-logo" />
+        <h1 class="login-title">เข้าสู่เว็บไซต์</h1>
+
+        <form id="loginForm" novalidate>
+          <label for="username">ชื่อผู้ใช้</label>
+          <input
+            type="text"
+            id="username"
+            placeholder="กรอกชื่อผู้ใช้"
+            required
+          />
+
+          <label for="password">รหัสผ่าน</label>
+          <div class="pass-row">
+            <input type="password" id="password" placeholder="ไม่บังคับกรอก" />
+            <button
+              type="button"
+              class="toggle-pass"
+              aria-label="toggle password"
+              onclick="this.previousElementSibling.type = this.previousElementSibling.type==='password' ? 'text' : 'password'"
+            >
+              👁
+            </button>
+          </div>
+
+          <button type="submit" class="btn-primary">เข้าสู่ระบบ</button>
+          <div class="hint">* ระบบเดโม ไม่ตรวจสอบรหัสผ่านจริง</div>
+        </form>
       </div>
     </div>
+
+    <script>
+      const form = document.getElementById("loginForm");
+      const bgVid = document.getElementById("bgVid");
+      const NEXT = "intro.html";
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("username").value.trim();
+        if (!name) {
+          document.querySelector(".login-card").classList.add("shake");
+          setTimeout(
+            () =>
+              document.querySelector(".login-card").classList.remove("shake"),
+            500
+          );
+          return;
+        }
+
+        // เก็บสถานะล็อกอินแบบเดโม
+        localStorage.setItem(
+          "app_auth",
+          JSON.stringify({ loggedIn: true, name, ts: Date.now() })
+        );
+
+        // พยายามให้วิดีโอเล่นแน่ ๆ (บางบราวเซอร์บล็อก)
+        try {
+          await bgVid.play();
+        } catch (e) {}
+
+        // เริ่มเอฟเฟกต์ซูมพื้นหลัง + เบลอการ์ด
+        document.body.classList.add("zooming");
+
+        // ไปหน้าถัดไปหลังเอฟเฟกต์ (ต้องตรงกับ duration ใน CSS)
+        setTimeout(() => (window.location.href = NEXT), 1000);
+      });
+    </script>
   </body>
 </html>

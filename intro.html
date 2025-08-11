@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Intro</title>
+    <link rel="stylesheet" href="style.css?v=6" />
+    <style>
+      /* ===== Loader บนหน้า Intro ===== */
+      .intro-loader {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 24px;
+        z-index: 5;
+        width: min(420px, 86%);
+        background: rgba(0, 0, 0, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 14px;
+        padding: 10px 12px;
+        color: #fff;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(6px);
+        text-align: center;
+      }
+      .intro-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+      }
+      .intro-progress {
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.15);
+      }
+      .intro-progress .intro-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #a0e3ff, #5fd4ff);
+        transition: width 0.08s linear;
+      }
+      .intro-percent {
+        margin-top: 6px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+      }
+      body.leaving .intro-loader {
+        opacity: 0;
+        transition: opacity 0.35s ease;
+      }
+
+      /* ===== Welcome Overlay กลางจอ ===== */
+      .welcome-overlay {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        z-index: 6;
+        pointer-events: none;
+        opacity: 0;
+        transform: scale(0.96);
+        transition: opacity 0.35s ease, transform 0.35s ease;
+      }
+      .welcome-overlay::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(transparent 40%, rgba(0, 0, 0, 0.45));
+        opacity: 0;
+        transition: opacity 0.35s ease;
+      }
+      .welcome-box {
+        padding: 22px 28px;
+        border-radius: 18px;
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        color: #fff;
+        text-align: center;
+        backdrop-filter: blur(6px);
+      }
+      .welcome-box h2 {
+        margin: 0;
+        font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+        letter-spacing: 0.5px;
+        text-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+      }
+      .welcome-overlay.show {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .welcome-overlay.show::before {
+        opacity: 1;
+      }
+      body.leaving .welcome-overlay {
+        opacity: 0;
+      }
+
+      /* ปุ่มออกจากระบบเล็ก */
+      .mini-logout {
+        margin-top: 12px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 0;
+        background: rgba(255, 255, 255, 0.85);
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      /* ===== ปุ่มเปิด/ปิดเสียง ===== */
+      .sound-toggle {
+        position: absolute;
+        right: 16px;
+        top: 16px;
+        z-index: 7;
+        padding: 8px 10px;
+        border: 0;
+        border-radius: 999px;
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.55);
+        color: #fff;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(6px);
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- วิดีโอโลโก้เต็มจอ -->
+    <section id="intro">
+      <video
+        id="introVideo"
+        autoplay
+        muted
+        playsinline
+        preload="auto"
+        poster="images/logo.jpg"
+      >
+        <!-- วางไฟล์ไว้ที่ /videos/Logo.mp4 (ชื่อไฟล์ต้องตรงตัวพิมพ์ใหญ่เล็ก) -->
+        <source src="videos/Logo.mp4?v=6" type="video/mp4" />
+        เบราว์เซอร์ของคุณไม่รองรับวิดีโอ HTML5
+      </video>
+
+      <!-- โลโก้ทับบนวิดีโอ -->
+      <div class="center-overlay">
+        <img src="images/logo.png" alt="โลโก้" class="logo" />
+
+        <button class="mini-logout" onclick="logout()">ออกจากระบบ</button>
+      </div>
+
+      <!-- ปุ่มเปิด/ปิดเสียง -->
+      <button
+        id="soundBtn"
+        class="sound-toggle"
+        aria-pressed="false"
+        title="เปิดเสียง"
+      >
+        🔇
+      </button>
+
+      <!-- Welcome กลางจอ (จะแสดงเมื่อ % ใกล้ 100) -->
+      <div id="welcome" class="welcome-overlay" aria-hidden="true">
+        <div class="welcome-box"><h2 id="welcomeText">ยินดีต้อนรับ</h2></div>
+      </div>
+
+      <!-- Loader % ตามวิดีโอ -->
+      <div class="intro-loader" id="introLoader" aria-live="polite">
+        <div class="intro-title">กำลัง ข้อมูล DATA</div>
+        <div class="intro-progress">
+          <div class="intro-bar" id="introBar"></div>
+        </div>
+        <div class="intro-percent"><span id="introPct">0</span>%</div>
+      </div>
+
+      <!-- ปุ่มข้าม -->
+      <button id="skipBtn" class="skip">ข้าม ▶</button>
+    </section>
+
+    <script>
+      // ต้องล็อกอินก่อนถึงจะเข้าได้
+      (function guard() {
+        try {
+          const auth = JSON.parse(localStorage.getItem("app_auth") || "{}");
+          if (!auth.loggedIn) location.replace("index.html");
+        } catch {
+          location.replace("index.html");
+        }
+      })();
+
+      function logout() {
+        localStorage.removeItem("app_auth");
+        location.href = "index.html";
+      }
+
+      const video = document.getElementById("introVideo");
+      const skipBtn = document.getElementById("skipBtn");
+      const pctEl = document.getElementById("introPct");
+      const barEl = document.getElementById("introBar");
+      const welcome = document.getElementById("welcome");
+      const welcomeText = document.getElementById("welcomeText");
+      const soundBtn = document.getElementById("soundBtn");
+
+      // ใส่ชื่อผู้ใช้ใน "ยินดีต้อนรับ" ถ้ามี
+      try {
+        const auth = JSON.parse(localStorage.getItem("app_auth") || "{}");
+        if (auth && auth.name)
+          welcomeText.textContent = `ยินดีต้อนรับ, ${auth.name}`;
+      } catch {}
+
+      const NEXT_PAGE = "next.html";
+      let jumped = false;
+      let welcomeShown = false;
+      let simTimer = null;
+
+      function setProgress(p) {
+        const v = Math.max(0, Math.min(100, p));
+        pctEl.textContent = Math.floor(v);
+        barEl.style.width = v + "%";
+        if (!welcomeShown && v >= 92) {
+          welcome.classList.add("show");
+          welcomeShown = true;
+        }
+      }
+
+      const jump = () => {
+        if (jumped) return;
+        jumped = true;
+        setProgress(100);
+        document.body.classList.add("leaving");
+        setTimeout(() => {
+          window.location.href = NEXT_PAGE;
+        }, 350);
+      };
+
+      // ====== Progress ตามเวลาจริงของวิดีโอ ======
+      video.addEventListener("loadedmetadata", () => {
+        if (isFinite(video.duration) && video.duration > 0) {
+          video.addEventListener("timeupdate", () => {
+            if (!isFinite(video.duration)) return;
+            const p = (video.currentTime / video.duration) * 100;
+            setProgress(p);
+            if (video.currentTime >= video.duration - 0.2) jump();
+          });
+        } else {
+          startSimulatedProgress();
+        }
+      });
+
+      video.addEventListener("ended", jump);
+      skipBtn.addEventListener("click", jump);
+
+      // ====== ปุ่มเปิด/ปิดเสียง & นโยบาย autoplay ======
+      // บราวเซอร์ส่วนใหญ่บังคับ autoplay เฉพาะตอน "muted"
+      // ถ้าอยากมีเสียง ต้องให้ผู้ใช้กดปุ่ม/แตะจออย่างน้อย 1 ครั้ง
+      document.addEventListener(
+        "click",
+        async () => {
+          if (video.paused) {
+            try {
+              await video.play();
+            } catch (e) {}
+          }
+        },
+        { once: true }
+      );
+
+      soundBtn.addEventListener("click", async () => {
+        try {
+          await video.play();
+        } catch (e) {}
+        video.muted = !video.muted; // toggle mute
+        soundBtn.textContent = video.muted ? "🔇" : "🔊";
+        soundBtn.setAttribute("aria-pressed", (!video.muted).toString());
+      });
+
+      // ถ้าไฟล์วิดีโอ "ไม่มีเสียง" ให้ซ่อนปุ่มเปิดเสียง
+      function hasAudioTrack(v) {
+        try {
+          if (typeof v.mozHasAudio !== "undefined") return v.mozHasAudio; // Firefox
+          if (typeof v.webkitAudioDecodedByteCount !== "undefined")
+            // Safari/เก่าๆ
+            return v.webkitAudioDecodedByteCount > 0;
+          if (v.audioTracks && v.audioTracks.length) return true; // Chrome บางเวอร์ชัน
+        } catch {}
+        return false;
+      }
+      video.addEventListener("loadeddata", () => {
+        if (!hasAudioTrack(video)) soundBtn.style.display = "none";
+      });
+
+      // กันจอดำกรณีโหลดช้ามาก
+      setTimeout(() => {
+        if (!jumped && video.currentTime === 0) jump();
+      }, 12000);
+
+      // ====== จำลอง % หากอ่าน duration ไม่ได้ ======
+      function startSimulatedProgress() {
+        let p = 0;
+        if (simTimer) cancelAnimationFrame(simTimer);
+        const tick = () => {
+          const inc =
+            p < 80
+              ? Math.random() * 2 + 1.2
+              : p < 97
+              ? Math.random() * 1 + 0.4
+              : 0.2;
+          p = Math.min(100, p + inc);
+          setProgress(p);
+          if (!jumped && p < 100) {
+            simTimer = requestAnimationFrame(tick);
+          } else if (!jumped) {
+            jump();
+          }
+        };
+        simTimer = requestAnimationFrame(tick);
+      }
+    </script>
+  </body>
+</html>

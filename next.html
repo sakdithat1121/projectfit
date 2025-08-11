@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Portfolio Intro — แนะนำตัวแบบลูปสุดหล่อ</title>
+    <style>
+      :root {
+        --text: #e7f5ff;
+        --muted: #b5d6e9;
+        --brand: #5fd4ff;
+        --brand2: #a0e3ff;
+        --glass: rgba(255, 255, 255, 0.08);
+        --border: rgba(255, 255, 255, 0.15);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+        color: var(--text);
+      }
+      body {
+        overflow-x: hidden;
+        background: #081523;
+      }
+
+      .bg {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+      }
+      .bg video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.75) saturate(1.1);
+      }
+      .bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            1200px 600px at 20% 0%,
+            rgba(12, 29, 48, 0.5),
+            transparent 50%
+          ),
+          linear-gradient(
+            180deg,
+            rgba(5, 12, 22, 0.6),
+            rgba(5, 12, 22, 0.2) 40%,
+            rgba(5, 12, 22, 0.65)
+          );
+        pointer-events: none;
+      }
+
+      .audio-toggle {
+        position: fixed;
+        right: 16px;
+        top: 16px;
+        z-index: 10;
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 12px;
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.55);
+        color: #fff;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+        font-size: 18px;
+      }
+
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 28px 16px 80px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 28px;
+        align-items: center;
+        min-height: 70svh;
+      }
+      @media (max-width: 940px) {
+        .hero {
+          grid-template-columns: 1fr;
+          min-height: unset;
+        }
+      }
+
+      .kicker {
+        opacity: 0.9;
+        letter-spacing: 0.2px;
+      }
+      .title {
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        margin: 0.2rem 0 0.4rem;
+        line-height: 1.15;
+      }
+      .typed {
+        font-weight: 800;
+        letter-spacing: 0.6px;
+        background: linear-gradient(90deg, var(--brand2), var(--brand));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .bio {
+        max-width: 680px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--glass);
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      }
+      .btn.primary {
+        background: linear-gradient(90deg, var(--brand2), var(--brand));
+        color: #06314a;
+        border: 0;
+      }
+
+      .card3d {
+        justify-self: center;
+        perspective: 1200px;
+      }
+      .card3d .card {
+        width: min(360px, 85vw);
+        aspect-ratio: 4/5;
+        border-radius: 22px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+        transform-style: preserve-3d;
+        animation: spin 12s linear infinite;
+      }
+      @keyframes spin {
+        from {
+          transform: rotateY(0);
+        }
+        to {
+          transform: rotateY(360deg);
+        }
+      }
+      .card .top {
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(0, 0, 0, 0.25);
+      }
+      .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+      }
+      .card .name {
+        font-weight: 800;
+      }
+      .card .role {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      .card .body {
+        padding: 16px 18px 0;
+      }
+      .pill {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--border);
+        margin: 6px 6px 0 0;
+        font-size: 0.92rem;
+      }
+      .card .foot {
+        margin: 12px 18px 18px;
+        display: flex;
+        gap: 10px;
+      }
+      .stat {
+        flex: 1;
+        padding: 10px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--border);
+        text-align: center;
+      }
+      .stat .n {
+        font-weight: 900;
+        font-size: 1.2rem;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+      }
+      .reveal.show {
+        opacity: 1;
+        transform: none;
+        transition: opacity 0.55s ease, transform 0.55s ease;
+        transition-delay: var(--d, 0ms);
+      }
+
+      .gallery {
+        margin: 36px 0 16px;
+        overflow: hidden;
+        mask-image: linear-gradient(
+          90deg,
+          transparent,
+          #000 10%,
+          #000 90%,
+          transparent
+        );
+      }
+      .track {
+        display: flex;
+        gap: 14px;
+        width: max-content;
+        animation: marq 30s linear infinite;
+      }
+      .track img {
+        height: 160px;
+        width: auto;
+        border-radius: 14px;
+        object-fit: cover;
+        filter: brightness(0.92);
+      }
+      @keyframes marq {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      .skills {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin: 28px 0 8px;
+      }
+      @media (max-width: 920px) {
+        .skills {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 560px) {
+        .skills {
+          grid-template-columns: 1fr;
+        }
+      }
+      .skill {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      }
+      .ring {
+        --p: 72;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: conic-gradient(
+          #7bd8ff calc(var(--p) * 1%),
+          rgba(255, 255, 255, 0.08) 0
+        );
+        display: grid;
+        place-items: center;
+        animation: pulse 3s ease-in-out infinite;
+      }
+      .ring span {
+        font-weight: 800;
+      }
+      @keyframes pulse {
+        50% {
+          filter: brightness(1.2);
+        }
+      }
+      .skill .info .h {
+        font-weight: 800;
+      }
+      .skill .info .d {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .quotes {
+        height: 64px;
+        overflow: hidden;
+        margin: 22px 0 6px;
+        border-left: 4px solid var(--brand);
+        padding-left: 12px;
+      }
+      .quotes .inner {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        animation: vert 9s steps(3) infinite;
+      }
+      .quotes p {
+        margin: 0;
+        color: #d9f3ff;
+      }
+      @keyframes vert {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(-210%);
+        }
+      }
+
+      .reveal-stagger > * {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      .reveal-stagger.show > * {
+        opacity: 1;
+        transform: none;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+      .reveal-stagger.show > *:nth-child(1) {
+        transition-delay: 0.05s;
+      }
+      .reveal-stagger.show > *:nth-child(2) {
+        transition-delay: 0.12s;
+      }
+      .reveal-stagger.show > *:nth-child(3) {
+        transition-delay: 0.19s;
+      }
+      .reveal-stagger.show > *:nth-child(4) {
+        transition-delay: 0.26s;
+      }
+      .reveal-stagger.show > *:nth-child(5) {
+        transition-delay: 0.33s;
+      }
+      .reveal-stagger.show > *:nth-child(6) {
+        transition-delay: 0.4s;
+      }
+
+      footer {
+        margin: 40px 0 16px;
+        text-align: center;
+        color: var(--muted);
+      }
+
+      /* Clickable info cards + modal */
+      .info-grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+      .info-card {
+        display: block;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        transition: transform 0.15s ease, background 0.2s ease,
+          border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .info-card:hover {
+        transform: translateY(-2px) scale(1.01);
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      }
+      .info-card:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 3px;
+      }
+      .info-card h3 {
+        margin-top: 0;
+      }
+      .info-card ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        place-items: center;
+        z-index: 20;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(6px);
+      }
+      .modal.show {
+        display: grid;
+      }
+      .modal-card {
+        width: min(720px, 92vw);
+        max-height: 80svh;
+        overflow: auto;
+        background: rgba(10, 20, 30, 0.9);
+        color: #fff;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        padding: 22px;
+      }
+      .modal-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      .modal-title {
+        font-weight: 800;
+        font-size: 1.2rem;
+      }
+      .modal-close {
+        border: 0;
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+        border-radius: 10px;
+        cursor: pointer;
+        padding: 8px 10px;
+      }
+      .modal-body p {
+        margin: 0.5em 0;
+        color: #d8ecf8;
+      }
+      .modal-body li {
+        margin: 0.3em 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg">
+      <video id="bgVideo" autoplay muted loop playsinline preload="auto">
+        <source src="videos/bg-loop.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <button id="audioBtn" class="audio-toggle" title="เปิด/ปิดดนตรีพื้นหลัง">
+      🎵
+    </button>
+    <audio id="bgm" loop>
+      <source src="audio/bgm.mp3" type="audio/mpeg" />
+    </audio>
+
+    <main class="wrap">
+      <section class="hero">
+        <div class="reveal" style="--d: 60ms">
+          <div class="kicker">PORTFOLIO • INTRO</div>
+          <h1 class="title">
+            สวัสดีครับ ผม <span class="typed" id="typed"></span>
+          </h1>
+          <p class="bio">
+            “นักพัฒนาเว็บ + นักเล่าเรื่องด้วยโค้ด” ที่ชอบทดลองทำสิ่งใหม่ ๆ
+            ให้คนว้าว ถนัด React/Node/Design System —
+            ชอบงานที่ผสมเทคโนโลยีกับศิลปะ
+          </p>
+          <div class="actions reveal-stagger">
+            <a
+              class="btn primary"
+              href="#"
+              onclick="alert('ตัวอย่าง: ดาวน์โหลดยังไม่เชื่อมไฟล์จริง')"
+              >ดาวน์โหลด CV</a
+            >
+            <a class="btn" href="mailto:me@example.com">me@example.com</a>
+            <a class="btn" href="tel:+66999999999">+66 99-999-9999</a>
+          </div>
+          <div class="quotes reveal" style="--d: 120ms">
+            <div class="inner">
+              <p>“ออกแบบไว โปรโตไทป์เร็ว ภาพรวมชัด” — หัวหน้าทีม</p>
+              <p>“แก้บั๊กโหด แต่งานสะอาด อ่านง่าย” — เพื่อนร่วมทีม</p>
+              <p>“คิดได้เกินโจทย์ ลูกค้าชอบมาก” — ลูกค้า</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card3d reveal" id="statsCard" style="--d: 120ms">
+          <div class="card">
+            <div class="top">
+              <img class="avatar" src="images/me.jpg" alt="โปรไฟล์" />
+              <div>
+                <div class="name">นาย ศักดิธัช จะมัง</div>
+                <div class="role">Full-Stack Developer</div>
+              </div>
+            </div>
+            <div class="body reveal-stagger">
+              <span class="pill">React</span><span class="pill">Node.js</span
+              ><span class="pill">UI/UX</span><span class="pill">Motion</span>
+            </div>
+            <div class="foot">
+              <div class="stat">
+                <div class="n" data-count="36">0</div>
+                <div>โปรเจกต์</div>
+              </div>
+              <div class="stat">
+                <div class="n" data-count="7">0</div>
+                <div>ปีประสบการณ์</div>
+              </div>
+              <div class="stat">
+                <div class="n" data-count="12">0</div>
+                <div>รางวัล/เกียรติบัตร</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="reveal" style="--d: 60ms">
+        <div class="gallery">
+          <div class="track" id="track">
+            <img src="images/g1.jpg" alt="" /><img
+              src="images/g2.jpg"
+              alt=""
+            /><img src="images/g3.jpg" alt="" /><img
+              src="images/g4.jpg"
+              alt=""
+            />
+            <img src="images/g5.jpg" alt="" /><img
+              src="images/g6.jpg"
+              alt=""
+            /><img src="images/g7.jpg" alt="" /><img
+              src="images/g8.jpg"
+              alt=""
+            />
+            <img src="images/g1.jpg" alt="" /><img
+              src="images/g2.jpg"
+              alt=""
+            /><img src="images/g3.jpg" alt="" /><img
+              src="images/g4.jpg"
+              alt=""
+            />
+            <img src="images/g5.jpg" alt="" /><img
+              src="images/g6.jpg"
+              alt=""
+            /><img src="images/g7.jpg" alt="" /><img
+              src="images/g8.jpg"
+              alt=""
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- ส่วนข้อมูลสำคัญ (กดแล้วเรียกผ่าน Proxy) -->
+      <section class="reveal-stagger" style="margin: 60px 0">
+        <h2 style="text-align: center; margin-bottom: 28px">ข้อมูลสำคัญ</h2>
+        <div class="info-grid">
+          <a class="info-card" href="#" data-endpoint="/api/education.php"
+            ><h3>การศึกษา</h3>
+            <p>
+              ปริญญาตรี สาขาเทคโนโลยีสารสนเทศ มหาวิทยาลัยเทคโนโลยีจินตนาการ
+            </p></a
+          >
+          <a class="info-card" href="#" data-endpoint="/api/experience.php"
+            ><h3>ประสบการณ์ทำงาน</h3>
+            <ul>
+              <li>Full-Stack Developer ที่ บริษัท XYZ (2021–ปัจจุบัน)</li>
+              <li>Frontend Developer ที่ Startup ABC (2019–2021)</li>
+            </ul></a
+          >
+          <a class="info-card" href="#" data-endpoint="/api/skills.php"
+            ><h3>ความเชี่ยวชาญ</h3>
+            <p>React, Next.js, Node.js, UI/UX Design, Motion Animation</p></a
+          >
+          <a class="info-card" href="#" data-endpoint="/api/goals.php"
+            ><h3>เป้าหมาย</h3>
+            <p>สร้างประสบการณ์ผู้ใช้ที่ “เหนือจินตนาการ”</p></a
+          >
+        </div>
+      </section>
+
+      <!-- Modal -->
+      <div id="modal" class="modal" aria-hidden="true">
+        <div class="modal-card">
+          <div class="modal-head">
+            <div class="modal-title" id="modalTitle">Loading…</div>
+            <button class="modal-close" id="modalClose">ปิด</button>
+          </div>
+          <div class="modal-body" id="modalBody"></div>
+        </div>
+      </div>
+
+      <section class="skills reveal-stagger">
+        <div class="skill">
+          <div class="ring" style="--p: 92"><span>92%</span></div>
+          <div class="info">
+            <div class="h">Frontend</div>
+            <div class="d">React, Next.js, Tailwind, Motion</div>
+          </div>
+        </div>
+        <div class="skill">
+          <div class="ring" style="--p: 85"><span>85%</span></div>
+          <div class="info">
+            <div class="h">Backend</div>
+            <div class="d">Node.js, Express, Prisma, REST</div>
+          </div>
+        </div>
+        <div class="skill">
+          <div class="ring" style="--p: 88"><span>88%</span></div>
+          <div class="info">
+            <div class="h">UI/UX</div>
+            <div class="d">Design System, Wireframe, Prototype</div>
+          </div>
+        </div>
+        <div class="skill">
+          <div class="ring" style="--p: 76"><span>76%</span></div>
+          <div class="info">
+            <div class="h">DevOps</div>
+            <div class="d">Vercel, Docker (พื้นฐาน), CI/CD</div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="reveal" style="--d: 80ms">
+        © 2025 นาย ศักดิธัช จะมัง — พร้อมสร้างของใหม่ให้ “เหนือจินตนาการ” 🚀
+      </footer>
+    </main>
+
+    <script>
+      // Typed loop
+      const typedEl = document.getElementById("typed");
+      const words = [
+        "นาย ศักดิธัช จะมัง",
+        "เรียน Major Technology Information",
+        "นักออกแบบประสบการณ์ผู้ใช้ - นักพัฒนาเว็บ",
+        "มนุษย์ที่รักการทดลอง",
+      ];
+      let wi = 0,
+        ci = 0,
+        del = false;
+      function typeLoop() {
+        const w = words[wi];
+        ci += del ? -1 : 1;
+        typedEl.textContent = w.slice(0, ci);
+        if (!del && ci === w.length) {
+          del = true;
+          setTimeout(typeLoop, 900);
+          return;
+        }
+        if (del && ci === 0) {
+          del = false;
+          wi = (wi + 1) % words.length;
+        }
+        setTimeout(typeLoop, del ? 40 : 70);
+      }
+      typeLoop();
+
+      // BGM
+      const audioBtn = document.getElementById("audioBtn"),
+        bgm = document.getElementById("bgm");
+      let audioOn = false;
+      function updateAudioUI() {
+        audioBtn.textContent = audioOn ? "🔊" : "🎵";
+        audioBtn.title = audioOn ? "ปิดเสียงดนตรี" : "เปิดเสียงดนตรี";
+      }
+      audioBtn.addEventListener("click", async () => {
+        try {
+          if (!audioOn) {
+            await bgm.play();
+            audioOn = true;
+          } else {
+            bgm.pause();
+            audioOn = false;
+          }
+          updateAudioUI();
+        } catch {}
+      });
+      updateAudioUI();
+      document.addEventListener(
+        "pointerdown",
+        async () => {
+          try {
+            await document.getElementById("bgVideo").play();
+          } catch {}
+        },
+        { once: true }
+      );
+
+      // Reveal + Counters
+      const onceObserver = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const el = entry.target;
+              el.classList.add("show");
+              if (el.classList.contains("reveal-stagger"))
+                el.classList.add("show");
+              if (el.id === "statsCard") startCounters();
+              obs.unobserve(el);
+            }
+          });
+        },
+        { threshold: 0.14, rootMargin: "0px 0px -10% 0px" }
+      );
+      document
+        .querySelectorAll(".reveal, .reveal-stagger")
+        .forEach((el) => onceObserver.observe(el));
+      let countersStarted = false;
+      function startCounters() {
+        if (countersStarted) return;
+        countersStarted = true;
+        document.querySelectorAll(".stat .n").forEach((n) => {
+          const target = +n.dataset.count;
+          let val = 0;
+          const step = Math.max(1, Math.floor(target / 60));
+          (function tick() {
+            val = Math.min(target, val + step);
+            n.textContent = val;
+            if (val < target) requestAnimationFrame(tick);
+            else
+              setTimeout(() => {
+                val = Math.max(0, target - Math.floor(target * 0.15));
+                n.textContent = val;
+                requestAnimationFrame(tick);
+              }, 2000);
+          })();
+        });
+      }
+    </script>
+
+    <!-- เรียก PHP ผ่าน Vercel Proxy -->
+    <script>
+      const USE_PROXY = true;
+      const API_BASE = "https://your-php-host.com"; // ใช้เมื่อไม่ผ่าน proxy
+
+      const modal = document.getElementById("modal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalBody = document.getElementById("modalBody");
+      const modalClose = document.getElementById("modalClose");
+      function openModal() {
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden", "false");
+      }
+      function closeModal() {
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+      }
+      modalClose.addEventListener("click", closeModal);
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+
+      function endpointToSlug(ep) {
+        const m = String(ep).match(/\/api\/([a-z0-9_-]+)\.php/i);
+        return m ? m[1] : ep;
+      }
+
+      document.querySelectorAll(".info-card").forEach((card) => {
+        card.addEventListener("click", async (e) => {
+          e.preventDefault();
+          const endpoint = card.getAttribute("data-endpoint");
+          if (!endpoint) return;
+          modalTitle.textContent = "กำลังโหลด…";
+          modalBody.innerHTML = "<p>โปรดรอ</p>";
+          openModal();
+          try {
+            const url = USE_PROXY
+              ? `/api/php?path=${encodeURIComponent(endpointToSlug(endpoint))}`
+              : API_BASE.replace(/\/+$/, "") + endpoint;
+            const res = await fetch(url, { method: "GET" });
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const data = await res.json();
+
+            modalTitle.textContent = data.title || "รายละเอียด";
+            if (data.html) {
+              modalBody.innerHTML = data.html;
+            } else if (Array.isArray(data.items)) {
+              modalBody.innerHTML =
+                "<ul>" +
+                data.items
+                  .map((item) => {
+                    if (item.program) {
+                      return `<li><strong>${item.program}</strong> — ${
+                        item.school
+                      } <em>(${item.years})</em><br>${item.detail || ""}</li>`;
+                    }
+                    if (item.role) {
+                      return `<li><strong>${item.role}</strong> — ${
+                        item.org
+                      } <em>(${item.years})</em><br>${item.detail || ""}</li>`;
+                    }
+                    return `<li>${Object.values(item).join(" — ")}</li>`;
+                  })
+                  .join("") +
+                "</ul>";
+            } else if (Array.isArray(data.skills)) {
+              modalBody.innerHTML =
+                "<div>" +
+                data.skills
+                  .map(
+                    (s) =>
+                      `<div style="margin:.4em 0"><strong>${
+                        s.name
+                      }</strong> — ${s.percent}%<br><span style="opacity:.85">${
+                        s.stack || ""
+                      }</span></div>`
+                  )
+                  .join("") +
+                "</div>";
+            } else {
+              modalBody.textContent = "ไม่มีข้อมูลสำหรับแสดง";
+            }
+          } catch (err) {
+            modalTitle.textContent = "เกิดข้อผิดพลาด";
+            modalBody.innerHTML = `<p style="color:#ffb3b3">โหลดข้อมูลไม่สำเร็จ: ${err.message}</p><p>ถ้าใช้ Proxy: ตรวจสอบค่า PHP_API_BASE บน Vercel</p>`;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

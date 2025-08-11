@@ -1,25 +1,481 @@
+/* ===== Reset & Base ===== */
+* {
+  box-sizing: border-box;
+}
 html,
 body {
   height: 100%;
-}
-body {
   margin: 0;
-  background: linear-gradient(#4ec0ca, #1a5f7a);
-  color: #fff;
-  text-align: center;
-  padding-top: 24px;
   font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
 }
+:root {
+  --bg1: #0b1220;
+  --bg2: #0f2a3f;
+  --glass: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.12);
+  --brand: #5fd4ff;
+  --brand2: #a0e3ff;
+  --text: #e7f5ff;
+}
 
-/* วิดีโอมังกร */
-#dragon {
+/* ================= Intro (intro.html) ================= */
+#intro {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+#intro video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.center-overlay {
   position: absolute;
-  width: 180px; /* ปรับขนาดมังกรได้ */
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: #fff;
+  padding-top: 4vh;
+  background: radial-gradient(transparent, rgba(0, 0, 0, 0.25) 55%);
+}
+.center-overlay .logo {
+  width: 140px;
   height: auto;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  margin-bottom: 14px;
+  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.6));
+}
+.center-overlay .brand {
+  font-size: 2.2rem;
+  letter-spacing: 2px;
+  text-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
+}
+
+.skip {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+.skip:hover {
+  background: #fff;
+}
+
+/* เฟดเอาท์ก่อนเปลี่ยนหน้า */
+body.leaving #intro {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+/* ================= Next Page (next.html) ================= */
+.page {
+  min-height: 100vh;
+  color: #e7f5ff;
+  position: relative;
+}
+#bg-video {
+  position: fixed;
+  inset: 0;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+.page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 18, 34, 0.65),
+    rgba(6, 18, 34, 0.25) 45%,
+    rgba(6, 18, 34, 0.65)
+  );
+}
+
+.topbar {
+  height: 56px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+}
+.logo-sm {
+  width: 32px;
+  height: 32px;
+}
+.topbar .title {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 980px;
+  margin: 28px auto;
+  padding: 0 16px;
+}
+h2 {
+  margin: 0 0 10px;
+}
+p {
+  opacity: 0.92;
+}
+
+.grid-3 {
+  margin: 22px 0 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.card {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+  border-radius: 18px;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-weight: 700;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+.card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.section {
+  margin: 36px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* ================= Login Page (index.html) ================= */
+/* พื้นหลังไล่สี + บับเบิลเคลื่อน */
+.login-page {
+  min-height: 100vh;
+  color: var(--text);
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(
+      1200px 600px at 15% -10%,
+      #16304d,
+      transparent 60%
+    ),
+    radial-gradient(1200px 700px at 110% 110%, #0a3a4f, transparent 60%),
+    linear-gradient(180deg, var(--bg1), var(--bg2) 50%, var(--bg1));
+}
+.bg-anim {
+  position: fixed;
+  inset: 0;
   pointer-events: none;
-  transition: transform 0.08s linear; /* ใช้กลับซ้าย/ขวา */
-  border-radius: 12px; /* เอาออกได้ถ้าไม่ต้องการ */
+  z-index: 0;
+}
+.blob {
+  position: absolute;
+  filter: blur(40px);
+  opacity: 0.5;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #69dbff, transparent 60%),
+    radial-gradient(circle at 70% 60%, #4dabf7, transparent 60%);
+  animation: float 14s ease-in-out infinite;
+}
+.blob.b1 {
+  width: 380px;
+  height: 380px;
+  left: -80px;
+  top: -60px;
+}
+.blob.b2 {
+  width: 300px;
+  height: 300px;
+  right: -60px;
+  bottom: -40px;
+  animation-duration: 18s;
+}
+.blob.b3 {
+  width: 260px;
+  height: 260px;
+  left: 40%;
+  top: 70%;
+  animation-duration: 16s;
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px) scale(1.04);
+  }
+}
+
+/* วิดีโอพื้นหลังทั้งหน้า (ล็อกอิน) */
+.bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  z-index: -1;
+  background: #000;
+}
+/* ซูมวิดีโอเมื่อกดล็อกอิน */
+@keyframes bgZoom {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  100% {
+    transform: scale(1.12);
+    filter: brightness(1.08);
+  }
+}
+body.zooming .bg-video {
+  animation: bgZoom 1s ease forwards;
+}
+/* เบลอ/เฟดการ์ดระหว่างซูม */
+body.zooming .auth-grid {
+  filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.45s ease, filter 0.45s ease;
+}
+/* กันกระตุก */
+.bg-video,
+.auth-grid {
+  will-change: transform, opacity, filter;
+}
+
+/* การจัดวางการ์ดล็อกอิน (คอลัมน์เดียว) */
+.auth-grid {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  margin: 14vh auto 0;
+  padding: 0 18px;
+}
+.login-card {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  animation: fadeInUp 0.5s ease both;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.login-card.shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+
+.login-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 10px;
+}
+.login-title {
+  text-align: center;
+  margin: 6px 0 18px;
+}
+
+label {
+  display: block;
+  margin: 10px 0 6px;
+  font-weight: 600;
+}
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  outline: none;
+}
+input::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+.pass-row {
+  position: relative;
+}
+.toggle-pass {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 18px;
+  color: #ddd;
+}
+.btn-primary {
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #062133;
+  background: linear-gradient(90deg, var(--brand2), var(--brand));
+  box-shadow: 0 10px 24px rgba(0, 140, 200, 0.35);
+  transition: transform 0.08s ease, filter 0.15s ease;
+}
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
+.btn-primary:active {
+  transform: translateY(1px);
+}
+.hint {
+  margin-top: 10px;
+  opacity: 0.85;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* ================= Responsive ================= */
+@media (max-width: 768px) {
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .center-overlay .brand {
+    font-size: 1.8rem;
+  }
+  .center-overlay .logo {
+    width: 120px;
+  }
+}
+@media (max-width: 560px) {
+  .auth-grid {
+    margin-top: 10vh;
+  }
+}
+/* Clickable info cards + modal */
+.info-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.info-card {
+  display: block;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.info-card:hover {
+  transform: translateY(-2px) scale(1.01);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+.info-card h3 {
+  margin-top: 0;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  place-items: center;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+}
+.modal.show {
+  display: grid;
+}
+.modal-card {
+  width: min(720px, 92vw);
+  max-height: 80svh;
+  overflow: auto;
+  background: rgba(10, 20, 30, 0.9);
+  color: #fff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  padding: 22px;
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.modal-title {
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+.modal-close {
+  border: 0;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 8px 10px;
+}
+.modal-body p {
+  margin: 0.5em 0;
+  color: #d8ecf8;
+}
+.modal-body li {
+  margin: 0.3em 0;
 }
